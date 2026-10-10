@@ -4,6 +4,7 @@
   "description": "A private digital keep for memories",
   "type": "module",
   "scripts": {
+    "start": "tsx server.ts",
     "dev": "tsx watch server.ts",
     "build": "tsc && vite build",
     "preview": "vite preview",
