@@ -2,6 +2,8 @@ import express from 'express';
 import { createServer } from 'vite';
 import { auth } from './src/lib/auth';
 import { getPrisma } from './src/lib/db';
+import path from "path";
+import { fileURLToPath } from "url";
 
 let prismaAvailable = false;
 
@@ -1117,8 +1119,7 @@ async function startServer() {
 
   // Start server
   // Serve static frontend files from Vite build output
-import path from "path";
-import { fileURLToPath } from "url";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
