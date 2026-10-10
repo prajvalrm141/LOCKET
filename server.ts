@@ -1116,10 +1116,26 @@ async function startServer() {
   });
 
   // Start server
-  const port = parseInt(process.env.PORT || '3000');
-  app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-  });
+  // Serve static frontend files from Vite build output
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, "../dist")));
+
+// SPA fallback for routing
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT as number, "0.0.0.0", () => {
+  console.log(`Server listening on port ${PORT}`);
+});
+
 }
 
 startServer().catch(console.error);
