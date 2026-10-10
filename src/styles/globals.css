@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --paper: #f3eee6;
+    --paper-deep: #e8e0d4;
+    --ink: #2a221c;
+    --ink-soft: #5a4d45;
+    --muted: #8b7d72;
+    --rose: #8d5b56;
+    --rose-light: #c49a96;
+    --rose-dark: #6b4440;
+  }
+
+  * {
+    @apply border-ink/10;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .paper-card {
+    @apply bg-white/90 backdrop-blur-sm shadow-paper rounded-xl border border-ink/5 transition-all duration-slow ease-gentle;
+  }
+
+  .paper-card-hover:hover {
+    @apply shadow-paper-hover;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ease-gentle focus:outline-none focus-visible:ring-2 focus-visible:ring-rose focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+  }
+
+  .btn-primary {
+    @apply btn bg-rose text-white hover:bg-rose-dark active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply btn bg-paper-deep text-ink hover:bg-paper-deep/80 active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-ink-soft hover:bg-ink/5 active:scale-[0.98];
+  }
+
+  .btn-danger {
+    @apply btn bg-rose/10 text-rose hover:bg-rose/20 active:scale-[0.98];
+  }
+
+  .input {
+    @apply w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border border-ink/10 text-ink placeholder-ink/30 focus:outline-none focus:ring-2 focus:ring-rose focus:border-transparent transition-all duration-200;
+  }
+
+  .textarea {
+    @apply input min-h-[120px] resize-y font-sans;
+  }
+
+  .page-bg {
+    @apply fixed inset-0 z-0 bg-cover bg-center bg-no-repeat;
+  }
+
+  .page-overlay {
+    @apply fixed inset-0 z-10 bg-ink/0 transition-opacity duration-slow;
+  }
+
+  .polaroid {
+    @apply relative bg-white shadow-paper rounded-none pb-8 transform transition-all duration-300 ease-gentle;
+  }
+
+  .polaroid img {
+    @apply w-full aspect-square object-cover;
+  }
+
+  .polaroid-caption {
+    @apply absolute bottom-0 left-0 right-0 p-3 text-center text-sm text-ink-soft font-sans;
+  }
+
+  .polaroid-date {
+    @apply absolute bottom-2 left-1/2 -translate-x-1/2 text-xs text-muted font-sans;
+  }
+
+  .hold-peek-active *:not(.peek-preserve) {
+    @apply invisible;
+  }
+
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-paper-deep via-paper to-paper-deep bg-[length:200%_100%];
+  }
+
+  .nav-link {
+    @apply flex flex-col items-center gap-1 px-3 py-2.5 text-sm text-ink-soft transition-colors duration-200;
+  }
+
+  .nav-link-active {
+    @apply text-rose;
+  }
+
+  .read-only-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose/10 text-rose text-xs font-medium;
+  }
+
+  .dedication-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-sm p-4;
+  }
+
+  .dedication-card {
+    @apply w-full max-w-md bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 text-center animate-fade-in-up;
+  }
+
+  .chapter-card {
+    @apply paper-card p-5 flex items-center gap-4;
+  }
+
+  .chapter-card-icon {
+    @apply w-12 h-12 rounded-xl bg-rose/10 flex items-center justify-center text-rose flex-shrink-0;
+  }
+
+  .chapter-card-content {
+    @apply flex-1 min-w-0;
+  }
+
+  .chapter-card-title {
+    @apply font-display font-medium text-ink truncate;
+  }
+
+  .chapter-card-count {
+    @apply text-sm text-muted font-sans;
+  }
+
+  .chapter-card-arrow {
+    @apply text-muted group-hover:text-rose transition-colors duration-200 flex-shrink-0;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

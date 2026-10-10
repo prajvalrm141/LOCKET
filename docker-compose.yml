@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: locket_db
+    environment:
+      POSTGRES_DB: locket
+      POSTGRES_USER: locket_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localdevpassword}
+    volumes:
+      - locket_db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U locket_user -d locket"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - locket_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: locket_app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://locket_user:${DB_PASSWORD:-localdevpassword}@db:5432/locket?schema=public
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      PORT: 3000
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-your-secret-key-here}
+    ports:
+      - "3000:3000"
+    networks:
+      - locket_network
+    restart: unless-stopped
+
+volumes:
+  locket_db_data:
+
+networks:
+  locket_network:
+    driver: bridge

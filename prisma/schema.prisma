@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  emailVerified     Boolean   @default(false)
+  name              String?
+  image             String?
+  password          String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  space             Space?
+  sessions          Session[]
+  accounts          Account[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  accountId         String
+  providerId        String
+  userId            String
+  accessToken       String? @db.Text
+  refreshToken      String? @db.Text
+  idToken           String? @db.Text
+  accessTokenExpiresAt DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope             String?
+  password          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  expiresAt    DateTime
+  token        String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  ipAddress    String?
+  userAgent    String?
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Space {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  title               String   @default("Our Keep")
+  dedication          String   @default("A keep, left for you")
+  herName             String   @default("Her")
+  ownerName           String   @default("Me")
+  shareToken          String   @unique @default(cuid())
+  shareEnabled        Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallpapers          Wallpaper[]
+  occasions           Occasion[]
+  moods               Mood[]
+  feelings            Feeling[]
+  quotes              Quote[]
+  anniversary         Anniversary?
+  anniversaryMoments  AnniversaryMoment[]
+  keepEvents          KeepEvent[]
+}
+
+model Wallpaper {
+  id        String   @id @default(cuid())
+  userId    String
+  pageKey   String
+  imageData String   @db.Text
+  overlay   Int      @default(30)
+  isGlobal  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  space     Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, pageKey])
+}
+
+model Occasion {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  note        String?  @db.Text
+  date        DateTime?
+  coverPhoto  String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  photos      Photo[]  @relation("OccasionPhotos")
+  space       Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Mood {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  note      String?  @db.Text
+  coverPhoto String? @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  photos    Photo[]  @relation("MoodPhotos")
+  space     Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Photo {
+  id          String   @id @default(cuid())
+  userId      String
+  albumType   String
+  albumId     String
+  imageData   String   @db.Text
+  thumbData   String   @db.Text
+  caption     String?
+  isCover     Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  occasion    Occasion? @relation("OccasionPhotos", fields: [albumId], references: [id], map: "Photo_occasion_fkey")
+  mood        Mood?    @relation("MoodPhotos", fields: [albumId], references: [id], map: "Photo_mood_fkey")
+}
+
+model Feeling {
+  id          String   @id @default(cuid())
+  userId      String
+  body        String   @db.Text
+  feltAt      DateTime
+  stampData   String?  @db.Text
+  stampThumb  String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  space       Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Quote {
+  id        String   @id @default(cuid())
+  userId    String
+  body      String   @db.Text
+  context   String?
+  saidOn    DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  space     Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Anniversary {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  happenedOn  DateTime
+  title       String   @default("Our Anniversary")
+  letter      String   @db.Text
+  coverPhoto  String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  space       Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  moments     AnniversaryMoment[]
+}
+
+model AnniversaryMoment {
+  id            String   @id @default(cuid())
+  userId        String
+  anniversaryId String
+  title         String
+  body          String   @db.Text
+  year          Int
+  date          DateTime?
+  photoData     String?  @db.Text
+  photoThumb    String?  @db.Text
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  anniversary   Anniversary @relation(fields: [anniversaryId], references: [id], onDelete: Cascade)
+  space         Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model KeepEvent {
+  id          String   @id @default(cuid())
+  userId      String
+  kind        String
+  refId       String?
+  title       String
+  bodyExcerpt String?  @db.Text
+  thumbData   String?  @db.Text
+  href        String
+  happenedAt  DateTime @default(now())
+  space       Space    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

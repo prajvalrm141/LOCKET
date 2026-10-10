@@ -1,0 +1,53 @@
+{
+  "name": "locket",
+  "version": "1.0.0",
+  "description": "A private digital keep for memories",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch server.ts",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "lint": "eslint src --ext ts,tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "@tanstack/react-form": "^0.40.0",
+    "@tanstack/react-query": "^5.56.0",
+    "@tanstack/react-router": "^1.65.0",
+    "@types/pg": "^8.23.1",
+    "better-auth": "^1.0.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "express": "^4.21.0",
+    "lucide-react": "^0.447.0",
+    "pg": "^8.23.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-dropzone": "^14.2.3",
+    "react-hook-form": "^7.53.0",
+    "tailwind-merge": "^2.5.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.104.1",
+    "@tanstack/router-devtools": "^1.65.0",
+    "@tanstack/router-vite-plugin": "^1.65.0",
+    "@types/express": "^5.0.0",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "prisma": "^7.10.0",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.8"
+  }
+}
